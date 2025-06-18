@@ -17,7 +17,7 @@ export class LoginComponent {
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', Validators.required],
       password: ['', Validators.required],
     });
   }
@@ -26,8 +26,8 @@ export class LoginComponent {
     if (this.loginForm.invalid) return;
     this.loading = true;
     this.error = null;
-    const { email, password } = this.loginForm.value;
-    this.auth.login(email, password).subscribe({
+    const { username, password } = this.loginForm.value;
+    this.auth.login(username, password).subscribe({
       next: () => this.router.navigate(['/']),
       error: err => {
         this.error = err.error?.message || 'Login failed';
