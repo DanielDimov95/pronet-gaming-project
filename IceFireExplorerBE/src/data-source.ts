@@ -7,5 +7,4 @@ export const AppDataSource = new DataSource({
   synchronize: true,           // Auto-create tables
   logging: false,
   entities: [__dirname + '/entities/*.ts'],
-  migrations: [__dirname + '/migrations/*.ts'],
 });

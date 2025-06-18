@@ -2,7 +2,7 @@
     <form
       [formGroup]="loginForm"
       (ngSubmit)="onSubmit()"
-      class="mx-auto w-full max-w-sm bg-background rounded-lg shadow-lg p-8 space-y-7"
+      class="mx-auto w-full max-w-sm bg-white rounded-lg shadow-lg p-8 space-y-7"
       autocomplete="off"
     >
       <div>
@@ -42,7 +42,7 @@
       </button>
       <div class="mt-2 text-xs text-center">
         Don't have an account?
-        <a routerLink="/register" class="underline hover:text-primary">Register</a>
+        <a routerLink="/register" class="underline hover:text-primary cursor-pointer">Register</a>
       </div>
     </form>
   </div>

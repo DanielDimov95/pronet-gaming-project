@@ -9,10 +9,36 @@ const options: swaggerJSDoc.Options = {
       version: '1.0.0',
       description: 'API documentation for Ice & Fire Explorer backend',
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    tags: [
+      {
+        name: 'Auth',
+        description: 'Authentication endpoints'
+      },
+      {
+        name: 'Houses',
+        description: 'Game of Thrones houses endpoints'
+      }
+    ],
+    servers: [
+      {
+        url: 'http://localhost:4000',
+        description: 'Development server'
+      }
+    ]
   },
   apis: [
     './src/routes/*.ts',
-    './src/controllers/*.ts'
+    './src/controllers/*.ts',
+    './src/middleware/*.ts'
   ],
 };
 

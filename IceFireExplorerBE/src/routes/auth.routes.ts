@@ -21,24 +21,32 @@ const asyncHandler = (fn: any) => (req: Request, res: Response, next: NextFuncti
  * @swagger
  * /auth/register:
  *   post:
- *     summary: Register a new user
  *     tags: [Auth]
+ *     summary: Register a new user
+ *     description: Create a new user account with username and password
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - username
+ *               - password
  *             properties:
  *               username:
  *                 type: string
+ *                 minLength: 3
  *               password:
  *                 type: string
+ *                 minLength: 6
  *     responses:
  *       201:
- *         description: User registered
+ *         description: User registered successfully
  *       409:
  *         description: User already exists
+ *       400:
+ *         description: Invalid input data
  */
 router.post('/register', registerValidation, handleValidation, asyncHandler(register));
 
@@ -46,14 +54,18 @@ router.post('/register', registerValidation, handleValidation, asyncHandler(regi
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Login a user
  *     tags: [Auth]
+ *     summary: Login a user
+ *     description: Authenticate a user and receive a JWT token
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - username
+ *               - password
  *             properties:
  *               username:
  *                 type: string
@@ -61,7 +73,7 @@ router.post('/register', registerValidation, handleValidation, asyncHandler(regi
  *                 type: string
  *     responses:
  *       200:
- *         description: Successful login, returns JWT token
+ *         description: Login successful
  *         content:
  *           application/json:
  *             schema:
@@ -69,8 +81,11 @@ router.post('/register', registerValidation, handleValidation, asyncHandler(regi
  *               properties:
  *                 token:
  *                   type: string
+ *                   description: JWT token for authentication
  *       401:
  *         description: Invalid credentials
+ *       400:
+ *         description: Invalid input data
  */
 router.post('/login', loginValidation, handleValidation, asyncHandler(login));
 

@@ -6,6 +6,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { PORT } from './config';
 import { AppDataSource } from './data-source';
 import { swaggerUi, swaggerSpec } from './config/swagger';
+import housesRoutes from './routes/houses.routes';
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/auth', authRoutes);
+app.use('/houses', housesRoutes);
 
 app.use(errorHandler);
 
