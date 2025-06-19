@@ -4,10 +4,13 @@
   @if (house.coatOfArms) {
     <div class="text-sm mb-2 line-clamp-2">{{house.coatOfArms}}</div>
   }
-  <a 
-    [routerLink]="['/houses', getHouseId()]"
-    class="mt-4 inline-block text-sm font-medium text-primary hover:underline"
-  >
-    View Details →
-  </a>
+  <div class="flex justify-between items-center">
+    <a 
+      [routerLink]="['/houses', getHouseId()]"
+      class="mt-4 inline-block text-sm font-medium text-primary hover:underline"
+    >
+      View Details →
+    </a>
+    <app-empty-heart class="w-6 h-6 cursor-pointer"></app-empty-heart>
+  </div>
 </div>
