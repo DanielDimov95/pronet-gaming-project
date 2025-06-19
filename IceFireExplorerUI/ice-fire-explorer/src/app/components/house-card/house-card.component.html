@@ -11,6 +11,12 @@
     >
       View Details →
     </a>
-    <app-empty-heart class="w-6 h-6 cursor-pointer"></app-empty-heart>
+    <button (click)="onToggleFavorite()" class="w-6 h-6">
+      @if (isFavorite()) {
+        <app-full-heart></app-full-heart>
+      } @else {
+        <app-empty-heart></app-empty-heart>
+      }
+    </button>
   </div>
 </div>

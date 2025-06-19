@@ -5,6 +5,9 @@ import { HousesService } from '../../services/houses.service';
 import { BehaviorSubject, Observable, combineLatest, map, switchMap, catchError, of } from 'rxjs';
 import { HouseCardComponent } from '../../components/house-card/house-card.component';
 import { HouseCardModel } from '../../models/house-card';
+import { Store } from '@ngrx/store';
+import { addFavorite, removeFavorite } from '../../state/favorites.actions';
+import { selectFavorites } from '../../state/favorites.selectors';
 
 @Component({
   selector: 'app-houses-list',
@@ -27,8 +30,9 @@ export class HousesListComponent implements OnInit {
   houses$: Observable<HouseCardModel[]>;
   currentPage$ = this.pageSubject.asObservable();
   search$ = this.searchSubject.asObservable();
+  favorites$: Observable<HouseCardModel[]>;
 
-  constructor(private housesService: HousesService) {
+  constructor(private housesService: HousesService, private store: Store) {
     // Fetch houses only when page changes
     this.pageSubject.pipe(
       switchMap(page => {
@@ -56,6 +60,8 @@ export class HousesListComponent implements OnInit {
         )
       )
     );
+
+    this.favorites$ = this.store.select(selectFavorites);
   }
 
   ngOnInit(): void {}
@@ -83,5 +89,13 @@ export class HousesListComponent implements OnInit {
 
   get totalPages(): number {
     return Math.ceil(this.totalHouses / this.pageSize);
+  }
+
+  toggleFavorite(house: HouseCardModel, favorites: HouseCardModel[]) {
+    if (favorites.some(fav => fav.url === house.url)) {
+      this.store.dispatch(removeFavorite({ houseId: house.url }));
+    } else {
+      this.store.dispatch(addFavorite({ house }));
+    }
   }
 }

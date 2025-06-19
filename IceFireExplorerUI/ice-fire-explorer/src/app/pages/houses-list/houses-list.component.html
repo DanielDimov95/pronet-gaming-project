@@ -23,30 +23,32 @@
   }
 
   @if (houses$ | async; as houses) {
-      <ng-container>
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
-              @for (house of houses; track house.url) {
-                  <app-house-card
-                      [house]="house"
-                  ></app-house-card>
-              }
-          </div>
+    @if (favorites$ | async; as favorites) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+          @for (house of houses; track house.url) {
+            <app-house-card
+              [house]="house"
+              [favorites]="favorites"
+              (favoriteToggled)="toggleFavorite($event, favorites)"
+            ></app-house-card>
+          }
+        </div>
 
-          <div class="mt-8 flex gap-2 justify-center">
-              <button
-                  (click)="prevPage()"
-                  [disabled]="currentPage === 1"
-              >
-                  Prev
-              </button>
-              <button
-                  (click)="nextPage()"
-                  [disabled]="currentPage === totalPages"
-              >
-                  Next
-              </button>
-              <span>Page {{ currentPage }} of {{ totalPages }}</span>
-          </div>
-      </ng-container>
+        <div class="mt-8 flex gap-2 justify-center">
+            <button
+                (click)="prevPage()"
+                [disabled]="currentPage === 1"
+            >
+                Prev
+            </button>
+            <button
+                (click)="nextPage()"
+                [disabled]="currentPage === totalPages"
+            >
+                Next
+            </button>
+            <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        </div>
     }
+  }
 </div>

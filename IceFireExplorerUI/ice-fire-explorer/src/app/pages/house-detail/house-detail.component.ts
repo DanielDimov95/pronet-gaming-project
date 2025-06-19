@@ -1,24 +1,35 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-  import { CommonModule } from '@angular/common';
-  import { HouseDetailModel } from '../../models/house-details';
+import { CommonModule } from '@angular/common';
+import { HouseDetailModel } from '../../models/house-details';
 import { HousesService } from '../../services/houses.service';
 import { EmptyHeartComponent } from '../../assets/svg/empty-heart.component';
+import { Store } from '@ngrx/store';
+import { addFavorite, removeFavorite } from '../../state/favorites.actions';
+import { selectFavorites } from '../../state/favorites.selectors';
+import { HouseCardModel } from '../../models/house-card';
+import { Observable } from 'rxjs';
+import { FullHeartComponent } from '../../assets/svg/full-heart.component';
 
 @Component({
   selector: 'app-house-detail',
-  standalone: true,
-  imports: [CommonModule, RouterModule, EmptyHeartComponent],
+  imports: [CommonModule, RouterModule, EmptyHeartComponent, FullHeartComponent],
   templateUrl: './house-detail.component.html',
   styleUrl: './house-detail.component.css'
 })
 export class HouseDetailComponent {
-  private route = inject(ActivatedRoute);
-  private housesService = inject(HousesService);
-
   house: HouseDetailModel | null = null;
   isLoading = true;
   error: string | null = null;
+  favorites$: Observable<HouseCardModel[]>;
+
+  constructor(
+    private route: ActivatedRoute,
+    private housesService: HousesService,
+    private store: Store
+  ) {
+    this.favorites$ = this.store.select(selectFavorites);
+  }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -39,20 +50,17 @@ export class HouseDetailComponent {
     }
   }
 
-  isFavorite(houseUrl: string | undefined | null): boolean {
+  isFavorite(houseUrl: string | undefined | null, favorites: HouseCardModel[]): boolean {
     if (!houseUrl) return false;
-    const favorites = JSON.parse(localStorage.getItem('favoriteHouses') || '[]');
-    return favorites.includes(houseUrl);
+    return favorites.some(fav => fav.url === houseUrl);
   }
 
-  toggleFavorite(houseUrl: string | undefined | null) {
-    if (!houseUrl) return;
-    let favorites = JSON.parse(localStorage.getItem('favoriteHouses') || '[]');
-    if (favorites.includes(houseUrl)) {
-      favorites = favorites.filter((url: string) => url !== houseUrl);
+  toggleFavorite(house: HouseDetailModel, favorites: HouseCardModel[]) {
+    if (!house?.url) return;
+    if (this.isFavorite(house.url, favorites)) {
+      this.store.dispatch(removeFavorite({ houseId: house.url }));
     } else {
-      favorites.push(houseUrl);
+      this.store.dispatch(addFavorite({ house }));
     }
-    localStorage.setItem('favoriteHouses', JSON.stringify(favorites));
   }
 }

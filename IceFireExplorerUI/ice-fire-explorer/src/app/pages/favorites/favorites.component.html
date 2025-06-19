@@ -1,1 +1,22 @@
-<p>favorites works!</p>ddd
+<div class="max-w-7xl mx-auto px-4 py-10">
+    <h2 class="text-3xl font-bold mb-4 flex items-center gap-2">
+      Favorites
+    </h2>
+    @if (favorites$ | async; as favorites) {
+      @if (favorites.length === 0) {
+        <div class="py-16 text-center text-lg text-muted-foreground">
+          No favorites yet.
+          <a routerLink="/houses" class="underline text-primary hover:text-accent">
+            Browse houses
+          </a>
+          to add some!
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+          @for (house of favorites; track house.url) {
+            <app-house-card [house]="house" [favorites]="favorites" (favoriteToggled)="removeFromFavorites($event)"></app-house-card>
+          }
+        </div>
+      }
+    }
+  </div>

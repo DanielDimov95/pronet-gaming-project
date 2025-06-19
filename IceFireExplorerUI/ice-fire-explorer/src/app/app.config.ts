@@ -1,13 +1,21 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideStore } from '@ngrx/store';
+import { favoritesReducer } from './state/favorites.reducer';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './services/auth.interceptor';
+import { authReducer } from './state/auth.reducer';
+import { housesReducer } from './state/houses.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
+    provideStore({
+      favorites: favoritesReducer,
+      houses: housesReducer,
+      auth: authReducer,
+    }),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(
