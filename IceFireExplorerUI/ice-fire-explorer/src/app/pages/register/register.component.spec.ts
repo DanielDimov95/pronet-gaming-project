@@ -3,6 +3,9 @@ import { RegisterComponent } from './register.component';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { register } from '../../state/auth.actions';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AuthService } from '../../services/auth.service';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -12,8 +15,16 @@ describe('RegisterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegisterComponent, ReactiveFormsModule],
-      providers: [provideMockStore()]
+      imports: [
+        RegisterComponent, 
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
+      providers: [
+        provideMockStore(),
+        AuthService
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);

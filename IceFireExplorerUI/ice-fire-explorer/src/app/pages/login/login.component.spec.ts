@@ -3,6 +3,9 @@ import { LoginComponent } from './login.component';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { login } from '../../state/auth.actions';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AuthService } from '../../services/auth.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -12,8 +15,16 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, ReactiveFormsModule],
-      providers: [provideMockStore()]
+      imports: [
+        LoginComponent, 
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
+      providers: [
+        provideMockStore(),
+        AuthService
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);

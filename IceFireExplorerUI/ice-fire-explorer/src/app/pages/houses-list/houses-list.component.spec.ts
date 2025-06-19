@@ -4,6 +4,9 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { addFavorite, removeFavorite } from '../../state/favorites.actions';
 import { HouseCardModel } from '../../models/house-card';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HousesService } from '../../services/houses.service';
 
 describe('HousesListComponent', () => {
   let component: HousesListComponent;
@@ -13,8 +16,21 @@ describe('HousesListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HousesListComponent, ReactiveFormsModule],
-      providers: [provideMockStore()]
+      imports: [
+        HousesListComponent, 
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
+      providers: [
+        provideMockStore({
+          initialState: {
+            favorites: { favorites: [] },
+            houses: { houses: [], loading: false, error: null }
+          }
+        }),
+        HousesService
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HousesListComponent);

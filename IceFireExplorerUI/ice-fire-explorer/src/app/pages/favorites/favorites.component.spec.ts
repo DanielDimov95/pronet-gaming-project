@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FavoritesComponent } from './favorites.component';
+import { provideMockStore } from '@ngrx/store/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('Favorites', () => {
   let component: FavoritesComponent;
@@ -8,9 +9,18 @@ describe('Favorites', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FavoritesComponent]
-    })
-    .compileComponents();
+      imports: [
+        FavoritesComponent,
+        RouterTestingModule
+      ],
+      providers: [
+        provideMockStore({ 
+          initialState: {
+            favorites: { favorites: [] }
+          }
+        })
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FavoritesComponent);
     component = fixture.componentInstance;
