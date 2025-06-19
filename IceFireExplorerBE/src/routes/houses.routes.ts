@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getHouses } from '../controllers/houses.controller';
+import { getHouses, getHouse } from '../controllers/houses.controller';
 import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
@@ -41,6 +41,42 @@ const router = Router();
 router.get('/', authenticateToken, async (req, res, next) => {
   try {
     await getHouses(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /houses/{id}:
+ *   get:
+ *     tags: [Houses]
+ *     summary: Get a house by ID
+ *     security:
+ *       - bearerAuth: []
+ *     description: Returns a house by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the house to retrieve
+ *     responses:
+ *       200:
+ *         description: A house
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       401:
+ *         description: No token provided
+ *       403:
+ *         description: Invalid token
+ */
+router.get('/:id', authenticateToken, async (req, res, next) => {
+  try {
+    await getHouse(req, res, next);
   } catch (error) {
     next(error);
   }
