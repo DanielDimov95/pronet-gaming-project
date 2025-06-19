@@ -1,5 +1,9 @@
-<div class="bg-card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+<div class="bg-card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow h-[14.375rem] flex flex-col justify-between">
   <h3 class="text-xl font-semibold mb-2">{{ house.name }}</h3>
+  <div class="text-sm mb-2">{{house.region || "Unknown region"}}</div>
+  @if (house.coatOfArms) {
+    <div class="text-sm mb-2 line-clamp-2">{{house.coatOfArms}}</div>
+  }
   <a 
     [routerLink]="['/houses', getHouseId()]"
     class="mt-4 inline-block text-sm font-medium text-primary hover:underline"

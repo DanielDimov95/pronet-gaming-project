@@ -1,16 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { House } from '../../services/houses.service';
+import { HouseCardModel } from '../../models/house-card';
 
 @Component({
   selector: 'app-house-card',
   templateUrl: './house-card.component.html',
   styleUrls: ['./house-card.component.css'],
-  imports: [CommonModule, RouterModule]
+  imports: [RouterModule]
 })
 export class HouseCardComponent {
-  @Input() house!: House;
+  @Input() house!: HouseCardModel;
 
   getHouseId(): string {
     return this.house.url.split('/').pop() || '';

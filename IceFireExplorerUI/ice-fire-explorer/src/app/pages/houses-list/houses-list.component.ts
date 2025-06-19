@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { HousesService, House } from '../../services/houses.service';
-import { BehaviorSubject, Observable, combineLatest, map, switchMap, catchError } from 'rxjs';
+import { HousesService } from '../../services/houses.service';
+import { BehaviorSubject, Observable, combineLatest, map, switchMap, catchError, of } from 'rxjs';
 import { HouseCardComponent } from '../../components/house-card/house-card.component';
+import { HouseCardModel } from '../../models/house-card';
 
 @Component({
   selector: 'app-houses-list',
@@ -14,24 +15,26 @@ import { HouseCardComponent } from '../../components/house-card/house-card.compo
 export class HousesListComponent implements OnInit {
   private pageSubject = new BehaviorSubject<number>(1);
   private searchSubject = new BehaviorSubject<string>('');
+  private housesPageSubject = new BehaviorSubject<HouseCardModel[]>([]);
   
+
+  readonly totalHouses = 444;
   readonly pageSize = 24;
   isLoading = false;
   error: string | null = null;
-  
-  houses$: Observable<House[]>;
+
+  // This observable emits the filtered houses
+  houses$: Observable<HouseCardModel[]>;
   currentPage$ = this.pageSubject.asObservable();
   search$ = this.searchSubject.asObservable();
 
   constructor(private housesService: HousesService) {
-    this.houses$ = combineLatest([this.pageSubject, this.searchSubject]).pipe(
-      switchMap(([page, search]) => {
+    // Fetch houses only when page changes
+    this.pageSubject.pipe(
+      switchMap(page => {
         this.isLoading = true;
         this.error = null;
         return this.housesService.getHouses(page, this.pageSize).pipe(
-          map(houses => houses.filter(house => 
-            house.name.toLowerCase().includes(search.toLowerCase())
-          )),
           map(houses => {
             this.isLoading = false;
             return houses;
@@ -39,10 +42,19 @@ export class HousesListComponent implements OnInit {
           catchError(error => {
             this.isLoading = false;
             this.error = error.message;
-            return [];
+            return of([]);
           })
         );
       })
+    ).subscribe(houses => this.housesPageSubject.next(houses));
+
+    // Filter the fetched houses in-memory when search changes
+    this.houses$ = combineLatest([this.housesPageSubject, this.searchSubject]).pipe(
+      map(([houses, search]) =>
+        houses.filter(house =>
+          house.name.toLowerCase().includes(search.toLowerCase())
+        )
+      )
     );
   }
 
@@ -54,14 +66,22 @@ export class HousesListComponent implements OnInit {
   }
 
   prevPage(): void {
-    this.pageSubject.next(Math.max(1, this.pageSubject.value - 1));
+    if (this.currentPage > 1) {
+      this.pageSubject.next(this.currentPage - 1);
+    }
   }
 
   nextPage(): void {
-    this.pageSubject.next(this.pageSubject.value + 1);
+    if (this.currentPage < this.totalPages) {
+      this.pageSubject.next(this.currentPage + 1);
+    }
   }
 
   get currentPage(): number {
     return this.pageSubject.value;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalHouses / this.pageSize);
   }
 }

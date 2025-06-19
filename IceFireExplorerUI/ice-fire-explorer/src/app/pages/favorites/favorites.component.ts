@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-favorites',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.css'
 })
