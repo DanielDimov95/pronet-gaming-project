@@ -3,6 +3,10 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { login } from '../../state/auth.actions';
+import { selectAuthLoading, selectAuthError, selectUser } from '../../state/auth.selectors';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -12,27 +16,23 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  loading = false;
-  error: string | null = null;
+  loading$: Observable<boolean>;
+  error$: Observable<any>;
+  user$: Observable<any>;
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, private store: Store) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
     });
+    this.loading$ = this.store.select(selectAuthLoading);
+    this.error$ = this.store.select(selectAuthError);
+    this.user$ = this.store.select(selectUser);
   }
 
   onSubmit() {
     if (this.loginForm.invalid) return;
-    this.loading = true;
-    this.error = null;
     const { username, password } = this.loginForm.value;
-    this.auth.login(username, password).subscribe({
-      next: () => this.router.navigate(['/']),
-      error: err => {
-        this.error = err.error?.message || 'Login failed';
-        this.loading = false;
-      }
-    });
+    this.store.dispatch(login({ username, password }));
   }
 }

@@ -8,6 +8,8 @@ import { HouseCardModel } from '../../models/house-card';
 import { Store } from '@ngrx/store';
 import { addFavorite, removeFavorite } from '../../state/favorites.actions';
 import { selectFavorites } from '../../state/favorites.selectors';
+import { loadHouses } from '../../state/houses.actions';
+import { selectHouses, selectHousesLoading, selectHousesError } from '../../state/houses.selectors';
 
 @Component({
   selector: 'app-houses-list',
@@ -19,20 +21,25 @@ export class HousesListComponent implements OnInit {
   private pageSubject = new BehaviorSubject<number>(1);
   private searchSubject = new BehaviorSubject<string>('');
   private housesPageSubject = new BehaviorSubject<HouseCardModel[]>([]);
-  
 
   readonly totalHouses = 444;
   readonly pageSize = 24;
   isLoading = false;
   error: string | null = null;
 
-  // This observable emits the filtered houses
   houses$: Observable<HouseCardModel[]>;
+  favorites$: Observable<HouseCardModel[]>;
+  loading$: Observable<boolean>;
+  error$: Observable<any>;
   currentPage$ = this.pageSubject.asObservable();
   search$ = this.searchSubject.asObservable();
-  favorites$: Observable<HouseCardModel[]>;
 
   constructor(private housesService: HousesService, private store: Store) {
+    this.houses$ = this.store.select(selectHouses);
+    this.favorites$ = this.store.select(selectFavorites);
+    this.loading$ = this.store.select(selectHousesLoading);
+    this.error$ = this.store.select(selectHousesError);
+
     // Fetch houses only when page changes
     this.pageSubject.pipe(
       switchMap(page => {
@@ -60,11 +67,11 @@ export class HousesListComponent implements OnInit {
         )
       )
     );
-
-    this.favorites$ = this.store.select(selectFavorites);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.dispatch(loadHouses({ page: 1, size: 24 }));
+  }
 
   onSearch(event: Event): void {
     const value = (event.target as HTMLInputElement).value;

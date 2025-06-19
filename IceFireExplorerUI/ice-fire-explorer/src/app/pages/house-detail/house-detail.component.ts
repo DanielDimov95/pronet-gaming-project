@@ -21,15 +21,13 @@ export class HouseDetailComponent {
   house: HouseDetailModel | null = null;
   isLoading = true;
   error: string | null = null;
-  favorites$: Observable<HouseCardModel[]>;
+  favorites$: Observable<HouseCardModel[]> = this.store.select(selectFavorites);
 
   constructor(
     private route: ActivatedRoute,
     private housesService: HousesService,
     private store: Store
-  ) {
-    this.favorites$ = this.store.select(selectFavorites);
-  }
+  ) {}
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -57,7 +55,7 @@ export class HouseDetailComponent {
 
   toggleFavorite(house: HouseDetailModel, favorites: HouseCardModel[]) {
     if (!house?.url) return;
-    if (this.isFavorite(house.url, favorites)) {
+    if (favorites.some(fav => fav.url === house.url)) {
       this.store.dispatch(removeFavorite({ houseId: house.url }));
     } else {
       this.store.dispatch(addFavorite({ house }));

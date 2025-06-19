@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { Store } from '@ngrx/store';
+import { register } from '../../state/auth.actions';
+import { selectAuthLoading, selectAuthError, selectUser } from '../../state/auth.selectors';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -12,33 +15,28 @@ import { CommonModule } from '@angular/common';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
-  loading = false;
-  error: string | null = null;
+  loading$: Observable<boolean>;
+  error$: Observable<any>;
+  user$: Observable<any>;
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private store: Store, private router: Router) {
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
     });
+    this.loading$ = this.store.select(selectAuthLoading);
+    this.error$ = this.store.select(selectAuthError);
+    this.user$ = this.store.select(selectUser);
   }
 
   onSubmit() {
     if (this.registerForm.invalid) return;
-    this.loading = true;
-    this.error = null;
     const { username, password, confirmPassword } = this.registerForm.value;
     if (password !== confirmPassword) {
-      this.error = 'Passwords do not match';
-      this.loading = false;
+      // handle error
       return;
     }
-    this.auth.register(username, password).subscribe({
-      next: () => this.router.navigate(['/']),
-      error: err => {
-        this.error = err.error?.message || 'Register failed';
-        this.loading = false;
-      }
-    });
+    this.store.dispatch(register({ username, password }));
   }
 }
