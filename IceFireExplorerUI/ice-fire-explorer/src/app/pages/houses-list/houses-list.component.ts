@@ -24,6 +24,7 @@ export class HousesListComponent implements OnInit {
 
   readonly totalHouses = 444;
   readonly pageSize = 24;
+  readonly startingPage = 1;
   isLoading = false;
   error: string | null = null;
 
@@ -70,7 +71,7 @@ export class HousesListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(loadHouses({ page: 1, size: 24 }));
+    this.store.dispatch(loadHouses({ page: this.startingPage, size: this.pageSize }));
   }
 
   onSearch(event: Event): void {

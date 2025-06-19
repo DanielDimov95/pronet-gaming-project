@@ -6,10 +6,11 @@ import { selectFavorites } from '../../state/favorites.selectors';
 import { HouseCardComponent } from '../../components/house-card/house-card.component';
 import { CommonModule } from '@angular/common';
 import { removeFavorite } from '../../state/favorites.actions';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-favorites',
-  imports: [HouseCardComponent, CommonModule],
+  imports: [HouseCardComponent, CommonModule, RouterModule],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.css'
 })

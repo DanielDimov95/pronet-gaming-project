@@ -21,13 +21,15 @@ export class HouseDetailComponent {
   house: HouseDetailModel | null = null;
   isLoading = true;
   error: string | null = null;
-  favorites$: Observable<HouseCardModel[]> = this.store.select(selectFavorites);
+  favorites$: Observable<HouseCardModel[]>;
 
   constructor(
     private route: ActivatedRoute,
     private housesService: HousesService,
     private store: Store
-  ) {}
+  ) {
+    this.favorites$ = this.store.select(selectFavorites);
+  }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
