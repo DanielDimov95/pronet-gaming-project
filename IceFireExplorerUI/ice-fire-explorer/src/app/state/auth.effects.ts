@@ -4,9 +4,11 @@ import * as AuthActions from './auth.actions';
 import { AuthService } from '../services/auth.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthEffects {
+  
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.login),
@@ -31,5 +33,27 @@ export class AuthEffects {
     )
   );
 
-  constructor(private actions$: Actions, private authService: AuthService) {}
+  constructor(private actions$: Actions, private authService: AuthService, private router: Router) {}
+
+  loginSuccessRedirect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.loginSuccess),
+        map(() => {
+          this.router.navigate(['/']);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  registerSuccessRedirect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.registerSuccess),
+        map(() => {
+          this.router.navigate(['/']);
+        })
+      ),
+    { dispatch: false }
+  );
 }

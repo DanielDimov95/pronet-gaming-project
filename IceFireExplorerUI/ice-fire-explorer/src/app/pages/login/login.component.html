@@ -34,11 +34,9 @@
           required
         />
       </div>
-      @if (error) {
-        <div class="text-destructive text-xs">{{ error }}</div>
-      }
-      <button class="w-full bg-slate-900 text-white py-2 rounded mt-2" [disabled]="loading" type="submit">
-        {{ loading ? 'Logging in...' : 'Login' }}
+      <div *ngIf="error$ | async as error" class="text-destructive text-xs">{{ error }}</div>
+      <button class="w-full bg-slate-900 text-white py-2 rounded mt-2" [disabled]="loading$ | async" type="submit">
+        {{ (loading$ | async) ? 'Logging in...' : 'Login' }}
       </button>
       <div class="mt-2 text-xs text-center">
         Don't have an account?

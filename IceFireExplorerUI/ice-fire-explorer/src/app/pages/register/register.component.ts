@@ -34,7 +34,6 @@ export class RegisterComponent {
     if (this.registerForm.invalid) return;
     const { username, password, confirmPassword } = this.registerForm.value;
     if (password !== confirmPassword) {
-      // handle error
       return;
     }
     this.store.dispatch(register({ username, password }));

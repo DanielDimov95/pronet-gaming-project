@@ -5,11 +5,12 @@ import { HouseDetailComponent } from './pages/house-detail/house-detail.componen
 import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { LoginComponent } from './pages/login/login.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
+    { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
+    { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
     { path: 'houses', component: HousesListComponent },
     { path: 'houses/:id', component: HouseDetailComponent },
     { path: 'favorites', component: FavoritesComponent },
