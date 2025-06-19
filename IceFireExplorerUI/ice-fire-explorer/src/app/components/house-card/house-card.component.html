@@ -1,1 +1,9 @@
-<p>house-card works!</p>
+<div class="bg-card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+  <h3 class="text-xl font-semibold mb-2">{{ house.name }}</h3>
+  <a 
+    [routerLink]="['/houses', getHouseId()]"
+    class="mt-4 inline-block text-sm font-medium text-primary hover:underline"
+  >
+    View Details →
+  </a>
+</div>

@@ -1,1 +1,47 @@
-<p>houses-list works!</p>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <h2 class="text-3xl font-bold mb-2">All Houses</h2>
+  <div class="mb-6 flex flex-col sm:flex-row gap-4 items-stretch sm:items-end justify-between">
+    <div class="flex-1">
+      <input
+        type="text"
+        placeholder="Search by house name…"
+        class="max-w-xs w-full px-3 py-2 border rounded-md"
+        [value]="(search$ | async) || ''"
+        (input)="onSearch($event)"
+      />
+    </div>
+    <div class="flex-none text-muted-foreground text-sm font-medium">
+      Page {{ currentPage }}
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="py-16 text-center">Loading houses…</div>
+  
+  <div *ngIf="error" class="py-16 text-center text-red-500">{{ error }}</div>
+
+  <ng-container *ngIf="houses$ | async as houses">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+      <app-house-card
+        *ngFor="let house of houses"
+        [house]="house"
+      ></app-house-card>
+    </div>
+
+    <div class="mt-8 flex gap-2 justify-center">
+      <button
+        class="px-4 py-2 rounded bg-secondary text-primary font-semibold disabled:opacity-40"
+        (click)="prevPage()"
+        [disabled]="currentPage === 1"
+      >
+        Prev
+      </button>
+      <button
+        class="px-4 py-2 rounded bg-secondary text-primary font-semibold disabled:opacity-40"
+        (click)="nextPage()"
+        [disabled]="(houses$ | async)?.length ?? 0 < pageSize"
+      >
+        Next
+      </button>
+    </div>
+  </ng-container>
+</div>
